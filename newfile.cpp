@@ -7,6 +7,7 @@ Student List Program in C++
 //include libraries
 #include <iostream>
 #include <vector>
+#include <cstring>
 
 using namespace std;
 
@@ -20,28 +21,29 @@ struct Student
 };
 
 //function declaration
-void add(vector<Student> *pstudents);
-void print(vector<Student> *pstudents);
-void remove(vector<Student> *pstudents);
-  
+void add(vector<Student*> *pstudents);
+void print(vector<Student*> *pstudents);
+void remove(vector<Student*> *pstudents);
+
+//main function
 int main()
 {
-  cout << "Welcome to Student List.  Type a to add students, p to print student information, and r to remove a student's information.  Press y to quit." << endl;
+  cout << "Welcome to Student List.  Type ADD to add students, PRINT to print student information, and DELETE to remove a student's information.  Type QUIT to quit." << endl;
 
   char invalid = 'y';
-  char input = ' ';
-  vector<Student> students;
-  vector<Student> *pstudents = &students;
+  char input[20] = " ";
+  vector<Student*> students;
+  vector<Student*> *pstudents = &students;
 
   while (invalid == 'y'){
     cin >> input;
-    if (input == 'a'){
+    if (!strcmp(input, "ADD")){
       add(pstudents);
-    }else if (input == 'p'){
+    }else if (!strcmp(input, "PRINT")){
       print(pstudents);
-    }else if (input == 'r'){
+    }else if (!strcmp(input, "DELETE")){
       remove(pstudents);   
-    }else if (input == 'y'){
+    }else if (!strcmp(input, "QUIT")){
       break;
     }else {
       cout << "Invalid input.  Would you like to try again?  Press y for yes and n for no. ";
@@ -51,35 +53,52 @@ int main()
   return 0;
 }
 
-void add(vector<Student> *pstudents)
+//add function
+void add(vector<Student*> *pstudents)
 {
-  Student random;
-  cout << "Enter first name: ";
-  cin >> random.firstname;
-  cout << "Enter last name: ";
-  cin >> random.lastname;
-  cout << "Enter student id: ";
-  cin >> random.studentid;
-  cout << "Enter GPA: ";
-  cin >> random.gpa;
+  Student* random = new Student();
+  cout << "Enter first name: " << endl;
+  cin >> random->firstname;
+  cout << "Enter last name: " << endl;
+  cin >> random->lastname;
+  cout << "Enter student id: " << endl;
+  cin >> random->studentid;
+  cout << "Enter GPA: " << endl;
+  cin >> random->gpa;
   pstudents->push_back(random);
-  cout << "You have successfully stored information.  Press a to add students, p to print student information, and r to remove a student's information.  Press y to quit." << endl;
+  cout << "You have successfully stored information.  Type ADD to add students, PRINT to print student information, and DELETE to remove a student's information.  Type QUIT to quit." << endl;
 }
 
-void print(vector<Student> *pstudents)
+//print function
+void print(vector<Student*> *pstudents)
 {
-  for (vector<Student>::iterator it = pstudents->begin(); it != pstudents->end(); ++it){
-    Student random = *it;
-    cout << random.firstname << " " << random.lastname << " | ID: " << random.studentid << " | GPA: " << random.gpa << endl;
+  for (vector<Student*>::iterator it = pstudents->begin(); it != pstudents->end(); it++){
+    Student* random = *it;
+    cout << random->firstname << " " << random->lastname << " | ID: " << random->studentid << " | GPA: " << random->gpa << endl;
   }
-  cout << "The program has finished printing.  Press a to add students, p to print student information, and r to remove a student's information.  Press y to quit." << endl;
+  cout << "The program has finished printing.  Type ADD to add students, PRINT to print student information, and DELETE to remove a student's information.  Type QUIT to quit." << endl;
 }
 
-void remove(vector<Student> *pstudents)
+//remove function
+void remove(vector<Student*> *pstudents)
 {
-  char number;
+  int number;
+  int count = -1;
   cout << "Enter the student id number for student's information to be deleted." << endl;
   cin >> number;
+  for (vector<Student*>::iterator it = pstudents->begin(); it != pstudents->end(); it++){
+    Student random = **it;
+      if (random.studentid == number){
+	delete *it;
+	count++;
+        pstudents->erase(pstudents->begin() + count);
+	cout << "You have successfully removed the student's information." << endl;
+	break;
+      } else if (random.studentid != number) {
+	count++;
+      }
+  }
+  cout << "Type ADD to add students, PRINT to print student information, and DELETE to remove a student's information.  Type QUITto quit." << endl;
 }
 
 
